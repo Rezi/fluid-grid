@@ -1,0 +1,167 @@
+:root {
+	--grid-gap: 16px;
+}
+$max-colspan: 10;
+$max-col-collapse: $max-colspan;
+$grid-col-width: 60px;
+
+.f-grid-solid {
+	grid-template-columns: repeat(auto-fill, minmax($grid-col-width, 1fr));
+}
+
+.f-grid-dense {
+	grid-auto-flow: dense;
+}
+
+.f-grid {
+	container-type: inline-size;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax($grid-col-width, 1fr));
+	word-break: break-word;
+
+	margin: calc(var(--grid-gap) * -0.5);
+
+	> * {
+		padding: calc(var(--grid-gap) * 0.5);
+	}
+
+	> .f-grid {
+		padding: calc(var(--grid-gap) * 0.5) !important;
+	}
+
+	> .f-grid {
+		&.f-grid-bottom {
+			align-self: end;
+		}
+
+		&.f-grid-center {
+			align-self: center;
+		}
+
+		&.f-grid-top {
+			align-self: start;
+		}
+	}
+
+	.f-row-2 {
+		grid-row: span 2;
+	}
+
+	.f-row-3 {
+		grid-row: span 3;
+	}
+
+	.f-col-max {
+		grid-column-start: 1;
+		grid-column-end: -1;
+	}
+}
+
+@for $i from 2 through $max-colspan {
+	@container (min-width: #{($i * $grid-col-width)}) {
+		@for $j from $i through $max-colspan {
+			.f-col-#{$j} {
+				grid-column: span #{$i};
+			}
+		}
+	}
+
+	/* Collapse functionality for single grid elements */
+	@for $k from 1 through $i {
+		@container (min-width: #{($i * $grid-col-width)}) and (max-width: #{(($i + 1) * $grid-col-width)}) {
+			@if $k !=$i {
+				.f-col-#{$k}-#{$i} {
+					grid-column: span #{$k};
+				}
+			}
+		}
+	}
+}
+
+/**** COLLAPSE FUNCTIONALITY ****/
+/*    For instance class .f-col-3-collapse given to the grid container, 
+  will force columns to stretch to 100% width,
+  when grid contaner width is smaller than ($grid-col-width * 4) */
+
+@for $i from 2 through $max-col-collapse {
+	/* This does not create the html attributes for querying, 
+it depends on the query creation few lines above*/
+
+	@container (max-width: #{(($i + 1) * $grid-col-width) }) {
+		@for $j from 1 through $i {
+			@if $j>1 {
+				.f-col-#{$j}.f-col-#{$i}-collapse {
+					grid-column-start: 1;
+					grid-column-end: -1;
+				}
+			} @else {
+				.f-col.f-col-#{$i}-collapse {
+					grid-column-start: 1;
+					grid-column-end: -1;
+				}
+			}
+
+			@if $j>1 {
+				.f-grid-#{$i}-collapse > .f-col-#{$j} {
+					grid-column-start: 1;
+					grid-column-end: -1;
+				}
+			} @else {
+				.f-grid-#{$i}-collapse > .f-col {
+					grid-column-start: 1;
+					grid-column-end: -1;
+				}
+			}
+		}
+	}
+}
+
+.f-grid-gap-0 {
+	margin: 0;
+
+	> * {
+		margin: 0;
+	}
+
+	> .f-grid {
+		padding: 0;
+	}
+}
+
+.f-grid-gap-05 {
+	margin: calc(var(--grid-gap) * -0.25);
+
+	> * {
+		padding: calc(var(--grid-gap) * 0.25);
+	}
+
+	> .f-grid {
+		padding: calc(var(--grid-gap) * 0.25) !important;
+	}
+}
+
+// .f-grid-gap-1 is default
+
+.f-grid-gap-2 {
+	margin: calc(var(--grid-gap) / -1);
+
+	> * {
+		padding: var(--grid-gap);
+	}
+
+	> .f-grid {
+		padding: var(--grid-gap) !important;
+	}
+}
+
+.f-grid-gap-3 {
+	margin: calc(var(--grid-gap) * -1.5);
+
+	> * {
+		padding: calc(var(--grid-gap) * 1.5);
+	}
+
+	> .f-grid {
+		padding: calc(var(--grid-gap) * 1.5) !important;
+	}
+}

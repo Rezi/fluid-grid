@@ -1,0 +1,28 @@
+{
+  "name": "fluid-grid",
+  "version": "1.1.1",
+  "description": "Fluid Grid css",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "zx build.mjs"
+  },
+  "keywords": [
+    "grid",
+    "css"
+  ],
+  "author": "Tomas Rezac",
+  "license": "ISC",
+  "dependencies": {
+    "cssnano": "^5.0.15",
+    "postcss": "^8.4.5",
+    "sass": "^1.47.0",
+    "which": "^2.0.2",
+    "zx": "^4.2.0"
+  },
+  "bin": "./build.mjs",
+  "type": "module",
+  "directories": {
+    "src": "./src"
+  }
+}
