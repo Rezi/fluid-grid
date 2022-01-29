@@ -18,6 +18,7 @@ const DEFAULTS = {
   UNITS: 'px',
   COLUMN_WIDTH: 60,
   MAX_COLSPAN: 10,
+  MAX_ROWSPAN: 5,
 };
 
 $.verbose = true;
@@ -89,7 +90,9 @@ const gapWidth = await question(
   `
 2) What is base ${chalk.yellow(
     'width of grid gap'
-  )} in pixels? ${chalk.magentaBright.italic('(Recommended 16)')}
+  )} in pixels? (default gap is 0 * gapWidth) ${chalk.magentaBright.italic(
+    '(Recommended 16)'
+  )}
    `
 );
 
@@ -97,6 +100,14 @@ const maxCollspan = await question(
   `
 3) Across how many columns spans the widest element in the grid? ${chalk.magentaBright.italic(
     '(Recommended 10)'
+  )}
+   `
+);
+
+const maxRowspan = await question(
+  `
+4) Across how many columns spans the highest element in the grid? ${chalk.magentaBright.italic(
+    '(Recommended 5)'
   )}
    `
 );
@@ -111,6 +122,10 @@ const gridScssContentReplaced = replaceTexts(gridScssText, [
   [
     '$max-colspan: 10;',
     `$max-colspan: ${parseInt(maxCollspan) || DEFAULTS.MAX_COLSPAN};`,
+  ],
+  [
+    '$max-rowspan: 5;',
+    `$max-rowspan: ${parseInt(maxRowspan) || DEFAULTS.MAX_ROWSPAN};`,
   ],
   [
     '$grid-col-width: 60px;',
