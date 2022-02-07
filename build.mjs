@@ -19,6 +19,7 @@ const DEFAULTS = {
   COLUMN_WIDTH: 60,
   MAX_COLSPAN: 10,
   MAX_ROWSPAN: 5,
+  MAX_CONTAINER_WIDTH: 0,
 };
 
 $.verbose = true;
@@ -82,7 +83,9 @@ const units = 'px';
 const columnWidth = await question(
   `1) What is minimal ${chalk.yellow(
     'width of one column'
-  )} in pixels? ${chalk.magentaBright.italic('(Recommended 60)')}
+  )} in pixels? ${chalk.magentaBright.italic(
+    `(Recommended ${DEFAULTS.COLUMN_WIDTH})`
+  )}
    `
 );
 
@@ -91,7 +94,7 @@ const gapWidth = await question(
 2) What is base ${chalk.yellow(
     'width of grid gap'
   )} in pixels? (default gap is 0 * gapWidth) ${chalk.magentaBright.italic(
-    '(Recommended 16)'
+    `(Recommended ${DEFAULTS.GRID_GAP})`
   )}
    `
 );
@@ -99,20 +102,47 @@ const gapWidth = await question(
 const maxCollspan = await question(
   `
 3) Across how many columns spans the widest element in the grid? ${chalk.magentaBright.italic(
-    '(Recommended 10)'
+    `(Recommended ${DEFAULTS.MAX_COLSPAN})`
   )}
    `
 );
 
 const maxRowspan = await question(
   `
-4) Across how many columns spans the highest element in the grid? ${chalk.magentaBright.italic(
-    '(Recommended 5)'
+4) Across how many rows spans the highest element in the grid? ${chalk.magentaBright.italic(
+    `(Recommended ${DEFAULTS.MAX_ROWSPAN})`
   )}
    `
 );
 
-const gridScssContentReplaced = replaceTexts(gridScssText, [
+const useSolidN = await question(
+  `
+5) Do you want to use .f-grid-soli-N classes? ${chalk.magentaBright.italic(
+    'y/n'
+  )}
+   ${chalk.blueBright.italic(
+     'Beware this will significantly increase size of generated CSS (5-15 times)'
+   )}
+  `
+);
+
+let maxContainerSize = DEFAULTS.MAX_CONTAINER_WIDTH;
+
+if (useSolidN === 'y') {
+  const responseMaxWidth = await question(
+    `
+  5) What will be maximum ${chalk.yellow(
+    'width in px'
+  )}  of the widest ${chalk.yellow(
+      '.f-grid-solid-N'
+    )} grid? ${chalk.magentaBright.italic('(Recommended 1280)')}
+    `
+  );
+
+  maxContainerSize = parseInt(responseMaxWidth);
+}
+
+const replacePairs = [
   [
     '--grid-gap: 16px;',
     `--grid-gap: ${parseInt(gapWidth) || DEFAULTS.GRID_GAP}${
@@ -133,7 +163,10 @@ const gridScssContentReplaced = replaceTexts(gridScssText, [
       units || DEFAULTS.UNITS
     };`,
   ],
-]);
+  ['$max-container-size: 1280;', `$max-container-size: ${maxContainerSize};`],
+];
+
+const gridScssContentReplaced = replaceTexts(gridScssText, replacePairs);
 
 console.log(
   chalk.green.underline(`

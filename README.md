@@ -23,12 +23,6 @@ Check examples and **documentation** at [fluid-grid.com](https://fluid-grid.com)
 
 Go to directory where you want to generate a fluid-grid.css
 
-If you don't have npx installed, run:
-
-```
-$: npm i -g npx
-```
-
 Then run a fluid grid wizard with:
 
 ```
