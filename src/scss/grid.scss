@@ -8,14 +8,14 @@
 $max-colspan: 10;
 $max-rowspan: 5;
 $max-col-collapse: $max-colspan;
-$grid-col-width: 60px;
-$max-container-size: 1280;
-$max-solid: math.floor(math.div($max-container-size, $grid-col-width));
+$minimal-column-width: 60px;
+$widest-grid-element: 1280;
+$max-solid: math.floor(math.div($widest-grid-element, $minimal-column-width));
 
 @for $i from 2 through $max-solid {
   @for $j from 2 through $max-colspan {
     @if $i > $j {
-      @container (min-width: #{($i) * $grid-col-width}) and (max-width: #{($i + 1) * $grid-col-width}) {
+      @container (min-width: #{($i) * $minimal-column-width}) and (max-width: #{($i + 1) * $minimal-column-width}) {
         .f-grid-solid-#{$j} {
           $nthChild: math.floor(math.div($i, $j));
           @for $k from 1 through $nthChild {
@@ -41,23 +41,28 @@ $max-solid: math.floor(math.div($max-container-size, $grid-col-width));
 }
 
 @for $i from 2 through $max-colspan {
-  @container (min-width: #{$i * $grid-col-width}) {
+  @container (min-width: #{$i * $minimal-column-width}) {
     .f-grid-#{$i} {
-      grid-template-columns: repeat(#{$i}, minmax($grid-col-width, 1fr));
+      grid-template-columns: repeat(#{$i}, minmax($minimal-column-width, 1fr));
     }
   }
+}
 
+@for $i from $max-colspan through 2 {
   @for $k from 1 through $i {
-    @container (min-width: #{$k * $grid-col-width}) and (max-width: #{(($i + 1) * $grid-col-width)}) {
+    @container (min-width: #{$k * $minimal-column-width}) and (max-width: #{(($i + 1) * $minimal-column-width)}) {
       .f-grid-#{$k}-#{$i} {
-        grid-template-columns: repeat(#{$k}, minmax($grid-col-width, 1fr));
+        grid-template-columns: repeat(
+          #{$k},
+          minmax($minimal-column-width, 1fr)
+        );
       }
     }
   }
 }
 
 .f-grid.f-grid-solid {
-  grid-template-columns: repeat(auto-fill, minmax($grid-col-width, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax($minimal-column-width, 1fr));
 }
 
 .f-grid-dense {
@@ -79,7 +84,7 @@ $max-solid: math.floor(math.div($max-container-size, $grid-col-width));
 .f-grid {
   container-type: inline-size;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax($grid-col-width, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax($minimal-column-width, 1fr));
   word-break: break-word;
 
   .f-col-max {
@@ -107,18 +112,20 @@ $max-solid: math.floor(math.div($max-container-size, $grid-col-width));
 }
 
 @for $i from 2 through $max-colspan {
-  @container (min-width: #{($i * $grid-col-width)}) {
+  @container (min-width: #{($i * $minimal-column-width)}) {
     @for $j from $i through $max-colspan {
       .f-col-#{$j} {
         grid-column: span #{$i};
       }
     }
   }
+}
 
-  /**** COLLAPSE FUNCTIONALITY ****/
+/**** COLLAPSE FUNCTIONALITY ****/
 
+@for $i from $max-colspan through 2 {
   @for $k from 1 through $i {
-    @container (min-width: #{($i * $grid-col-width)}) and (max-width: #{(($i + 1) * $grid-col-width)}) {
+    @container (min-width: #{($i * $minimal-column-width)}) and (max-width: #{(($i + 1) * $minimal-column-width)}) {
       .f-col-#{$k}\@#{$i} {
         grid-column: span #{$k};
       }
@@ -126,7 +133,7 @@ $max-solid: math.floor(math.div($max-container-size, $grid-col-width));
   }
 
   @for $k from 1 through $i {
-    @container (min-width: #{($k * $grid-col-width)}) and (max-width: #{(($i + 1) * $grid-col-width)}) {
+    @container (min-width: #{($k * $minimal-column-width)}) and (max-width: #{(($i + 1) * $minimal-column-width)}) {
       .f-col-#{$k}-#{$i} {
         grid-column: span #{$k};
       }
@@ -134,7 +141,7 @@ $max-solid: math.floor(math.div($max-container-size, $grid-col-width));
   }
 
   @for $k from 1 through $max-rowspan {
-    @container (min-width: #{($k * $grid-col-width)}) and (max-width: #{(($i + 1) * $grid-col-width)}) {
+    @container (min-width: #{($k * $minimal-column-width)}) and (max-width: #{(($i + 1) * $minimal-column-width)}) {
       .f-row-#{$k}-#{$i} {
         grid-row: span #{$k};
       }
@@ -143,7 +150,7 @@ $max-solid: math.floor(math.div($max-container-size, $grid-col-width));
 }
 
 @for $i from 2 through $max-col-collapse {
-  @container (max-width: #{(($i + 1) * $grid-col-width) }) {
+  @container (max-width: #{(($i + 1) * $minimal-column-width) }) {
     .f-col-#{$i}-collapse {
       grid-column-start: 1;
       grid-column-end: -1;

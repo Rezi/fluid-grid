@@ -158,12 +158,12 @@ const replacePairs = [
     `$max-rowspan: ${parseInt(maxRowspan) || DEFAULTS.MAX_ROWSPAN};`,
   ],
   [
-    '$grid-col-width: 60px;',
-    `$grid-col-width: ${parseInt(columnWidth) || COLUMN_WIDTH}${
+    '$minimal-column-width: 60px;',
+    `$minimal-column-width: ${parseInt(columnWidth) || COLUMN_WIDTH}${
       units || DEFAULTS.UNITS
     };`,
   ],
-  ['$max-container-size: 1280;', `$max-container-size: ${maxContainerSize};`],
+  ['$widest-grid-element: 1280;', `$widest-grid-element: ${maxContainerSize};`],
 ];
 
 const gridScssContentReplaced = replaceTexts(gridScssText, replacePairs);
